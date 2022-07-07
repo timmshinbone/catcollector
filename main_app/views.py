@@ -53,21 +53,29 @@ def assoc_toy_delete(request, cat_id, toy_id):
 
 def add_photo(request, cat_id):
     # photo-file will be the "name" attribute on the <input type="file">
+    # attempt to collect the photo file data
     photo_file = request.FILES.get('photo-file', None)
+    # use conditional logic to determine if file is present
     if photo_file:
+      # if present, we will create a reference to the boto3 client
         s3 = boto3.client('s3')
-        # need a unique "key" for S3 / needs image file extension too
+        # create a unique id for each photo file
         key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
         # just in case something goes wrong
         try:
+          # if successful
             s3.upload_fileobj(photo_file, BUCKET, key)
             # build the full url string
+            # take the exchanged url and save it to the database
             url = f"{S3_BASE_URL}{BUCKET}/{key}"
-            # we can assign to cat_id or cat (if you have a cat object)
+            # create a photo instance with a photo model and provide cat_id as a foreign key value
             photo = Photo(url=url, cat_id=cat_id)
+            # save the phto intance to the database
             photo.save()
         except:
+          #  print an error message
             print('An error occurred uploading file to S3')
+    # redirect the user to the cat detail page
     return redirect('detail', cat_id=cat_id)
 
 class CatCreate(CreateView):
