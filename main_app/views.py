@@ -7,14 +7,6 @@ from .forms import FeedingForm
 
 # Create your views here.
 
-# def home(request):
-#     '''
-#     this is where we return a response
-#     in most cases we  would render a template
-#     and we'll need some data for that template
-#     '''
-#     return HttpResponse('<h1> Hello World </h1>')
-
 def home(request):
   return render(request, 'home.html')
 
