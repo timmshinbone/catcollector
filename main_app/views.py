@@ -72,11 +72,13 @@ def add_photo(request, cat_id):
             photo = Photo(url=url, cat_id=cat_id)
             # save the phto intance to the database
             photo.save()
-        except:
+        except Exception as error:
           #  print an error message
-            print('An error occurred uploading file to S3')
+            print('Error uploading photo: ', error)
+            return redirect('detail', cat_id=cat_id)      
+    return redirect('detail', cat_id=cat_id) 
     # redirect the user to the cat detail page
-    return redirect('detail', cat_id=cat_id)
+      
 
 class CatCreate(CreateView):
   model = Cat
