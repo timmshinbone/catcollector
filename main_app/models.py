@@ -39,6 +39,13 @@ class Cat(models.Model):
   def get_absolute_url(self):
     return reverse('detail', kwargs={'cat_id': self.id})
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    favorite_color = models.CharField(max_length=50)
+
+    def __str__(self):
+      return f"{self.user} favorite color is {self.favorite_color}"
+
 class Feeding(models.Model):
   date = models.DateField('feeding date')
   meal = models.CharField(
