@@ -4,6 +4,7 @@ from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 from .forms import FeedingForm
 import uuid
 import boto3
@@ -19,12 +20,14 @@ def home(request):
 def about(request):
   return render(request, 'about.html')
 
+@login_required
 def cats_index(request):
   cats = Cat.objects.filter(user=request.user)
   # You could also retrieve the logged in user's cats like this
   # cats = request.user.cat_set.all()
   return render(request, 'cats/index.html', { 'cats': cats })
 
+@login_required
 def cats_detail(request, cat_id):
   cat = Cat.objects.get(id=cat_id)
   feeding_form = FeedingForm()
@@ -35,6 +38,7 @@ def cats_detail(request, cat_id):
     'toys': toys_cat_doesnt_have
   })
 
+@login_required
 def add_feeding(request, cat_id):
   # create the ModelForm using the data in request.POST
   form = FeedingForm(request.POST)
@@ -47,14 +51,17 @@ def add_feeding(request, cat_id):
     new_feeding.save()
   return redirect('detail', cat_id=cat_id)
 
+@login_required
 def assoc_toy(request, cat_id, toy_id):
   Cat.objects.get(id=cat_id).toys.add(toy_id)
   return redirect('detail', cat_id=cat_id)
 
-def assoc_toy_delete(request, cat_id, toy_id):
+@login_required
+def unassoc_toy(request, cat_id, toy_id):
   Cat.objects.get(id=cat_id).toys.remove(toy_id)
   return redirect('detail', cat_id=cat_id)
 
+@login_required
 def add_photo(request, cat_id):
     # photo-file will be the "name" attribute on the <input type="file">
     # attempt to collect the photo file data
