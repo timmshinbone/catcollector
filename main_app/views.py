@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import FeedingForm
 import uuid
 import boto3
-from .models import Cat, Toy, Photo
+from .models import Cat, Toy, Photo, User
 
 S3_BASE_URL = 'https://s3.amazonaws.com/'
 BUCKET = 'catcollector-avatar-10'
@@ -140,8 +140,16 @@ class ToyDetail(LoginRequiredMixin, DetailView):
   template_name = 'toys/detail.html'
 
 class ToyCreate(LoginRequiredMixin, CreateView):
-    model = Toy
-    fields = ['name', 'color']
+  model = Toy
+  fields = ['name', 'color']
+
+  # This inherited method is called when a
+  # valid cat form is being submitted
+  def form_valid(self, form):
+    # Assign the logged in user (self.request.user)
+    form.instance.user = self.request.user  # form.instance is the cat
+    # Let the CreateView do its job as usual
+    return super().form_valid(form)
 
 
 class ToyUpdate(LoginRequiredMixin, UpdateView):
