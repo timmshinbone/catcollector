@@ -32,7 +32,10 @@ def cats_index(request):
 def cats_detail(request, cat_id):
   cat = Cat.objects.get(id=cat_id)
   feeding_form = FeedingForm()
-  toys_cat_doesnt_have = Toy.objects.exclude(id__in = cat.toys.all().values_list('id'))
+
+  toys = Toy.objects.filter(user=request.user)
+  toys_cat_doesnt_have = toys.exclude(id__in = cat.toys.all().values_list('id'))  
+
   return render(request, 'cats/detail.html', {
     # include the cat and feeding_form in the context
     'cat': cat, 'feeding_form': feeding_form,
