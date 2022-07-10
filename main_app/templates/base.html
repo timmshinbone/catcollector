@@ -30,15 +30,16 @@
   
           <a href="#" data-target="mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
           <ul class="right hide-on-med-and-down">
+            {% if user.is_authenticated %}
+            <li>Hello, {{user}}</li>
+            {% endif %}
             <li><a href="{% url 'about' %}">About</a></li>
             {% if user.is_authenticated %}
             <li><a href="{% url 'cats_create' %}">Add a Cat</a></li>
             <li><a href="{% url 'index' %}">View All My Cats</a></li>
             <li><a href="{% url 'toys_index' %}">View All Toys</a></li>
             <li><a href="{% url 'toys_create' %}">Add a Toy</a></li>
-            <li>{% if user.is_authenticated %}
-              Hello, {{user}}
-              {% endif %}</li>
+            
             <li><a href="{% url 'logout' %}">Logout&nbsp;&nbsp;</a></li>
             {% else %}
             <li><a href="{% url 'signup' %}">Sign Up</a></li>
