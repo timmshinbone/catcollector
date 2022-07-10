@@ -134,6 +134,9 @@ class CatDelete(LoginRequiredMixin, DeleteView):
 class ToyList(LoginRequiredMixin, ListView):
   model = Toy
   template_name = 'toys/index.html'
+  
+  def get_queryset(self):
+    return Toy.objects.filter(user = self.request.user)
 
 class ToyDetail(LoginRequiredMixin, DetailView):
   model = Toy
@@ -144,10 +147,10 @@ class ToyCreate(LoginRequiredMixin, CreateView):
   fields = ['name', 'color']
 
   # This inherited method is called when a
-  # valid cat form is being submitted
+  # valid toy form is being submitted
   def form_valid(self, form):
     # Assign the logged in user (self.request.user)
-    form.instance.user = self.request.user  # form.instance is the cat
+    form.instance.user = self.request.user  # form.instance is the toy
     # Let the CreateView do its job as usual
     return super().form_valid(form)
 
