@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import FeedingForm
 import uuid
 import boto3
-from .models import Cat, Toy, Photo, User
+from .models import Cat, Toy, Photo
 
 S3_BASE_URL = 'https://s3.amazonaws.com/'
 BUCKET = 'catcollector-avatar-10'
