@@ -16,6 +16,10 @@ span.card-title, p {
   color: black
 }
 
+input.btn {
+  background-color: rgb(243, 184, 22)
+}
+
 footer {
   padding-top: 0;
   text-align: right;
