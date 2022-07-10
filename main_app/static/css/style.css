@@ -4,6 +4,10 @@ body {
   flex-direction: column;
 }
 
+nav, .page-footer {
+  background-color: rgb(243, 184, 22)
+}
+
 main {
   flex: 1 0 auto;
 }
