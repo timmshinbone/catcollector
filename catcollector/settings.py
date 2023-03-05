@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
 import environ
 import os
 
@@ -27,6 +28,7 @@ S3_BASE_URL = env('S3_BASE_URL')
 BUCKET = env('S3_BUCKET')
 ACCESS_ID = env('AWS_ACCESS_KEY')
 ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+BIT_DB_CONNECT = env('BIT_DB_CONNECTION')
 # environ.Env()
 # environ.Env.read_env()
 
@@ -38,9 +40,15 @@ ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 # from decouple import config
 # SECRET_KEY = config("SECRET_KEY")
 
-DEBUG = True
+# DEBUG = True
+DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = []
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+
+if RENDER_EXTERNAL_HOSTNAME: 
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # Application definition
@@ -58,6 +66,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -91,11 +100,17 @@ WSGI_APPLICATION = 'catcollector.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'testcats',
-    }
+    'default': dj_database_url.config(     
+    default='postgresql://postgres:postgres@localhost:5432/testcats',        
+    conn_max_age=600)
 }
+# THIS IS THE OLD ONE
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'testcats',
+#     }
+# }
 
 
 # Password validation
@@ -133,6 +148,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+if not DEBUG:
+    # Tell Django to copy statics to the `staticfiles` directory
+    # in your application directory on Render.
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+    # Turn on WhiteNoise storage backend that takes care of compressing static files
+    # and creating unique names for each version so they can safely be cached forever.
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 LOGIN_REDIRECT_URL = '/cats/'
 
