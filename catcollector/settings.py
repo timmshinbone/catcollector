@@ -12,20 +12,31 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import environ
+import os
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-
-environ.Env()
-environ.Env.read_env()
+SECRET_KEY = env('SECRET_KEY')
+S3_BASE_URL = env('S3_BASE_URL')
+BUCKET = env('S3_BUCKET')
+ACCESS_ID = env('AWS_ACCESS_KEY')
+ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+# environ.Env()
+# environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-from decouple import config
-SECRET_KEY = config("SECRET_KEY")
+# from decouple import config
+# SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = True
 
