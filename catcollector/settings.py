@@ -28,7 +28,7 @@ S3_BASE_URL = env('S3_BASE_URL')
 BUCKET = env('S3_BUCKET')
 ACCESS_ID = env('AWS_ACCESS_KEY')
 ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-BIT_DB_CONNECT = env('BIT_DB_CONNECTION')
+DATABASE_URL = env('DATABASE_URL')
 # environ.Env()
 # environ.Env.read_env()
 
