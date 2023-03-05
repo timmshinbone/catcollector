@@ -9,10 +9,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import FeedingForm
 import uuid
 import boto3
+import os
 from .models import Cat, Toy, Photo
 
-S3_BASE_URL = 'https://s3.amazonaws.com/'
-BUCKET = 'catcollector-avatar-10'
+S3_BASE_URL = os.environ['S3_BASE_URL']
+# S3_BASE_URL = 'https://s3.amazonaws.com/'
+BUCKET = os.environ['S3_BUCKET']
+# BUCKET = 'test-cat-collect-for-fruitcakes'
 # Create your views here.
 
 def home(request):
@@ -73,7 +76,9 @@ def add_photo(request, cat_id):
     # use conditional logic to determine if file is present
     if photo_file:
       # if present, we will create a reference to the boto3 client
-        s3 = boto3.client('s3')
+        ACCESS_ID = os.environ['AWS_ACCESS_KEY']
+        ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+        s3 = boto3.client('s3', aws_access_key_id=ACCESS_ID, aws_secret_access_key= ACCESS_KEY )
         # create a unique id for each photo file
         key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
         # just in case something goes wrong
@@ -167,5 +172,3 @@ class ToyUpdate(LoginRequiredMixin, UpdateView):
 class ToyDelete(LoginRequiredMixin, DeleteView):
     model = Toy
     success_url = '/toys/'
-
-
